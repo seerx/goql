@@ -16,9 +16,10 @@ import (
 )
 
 type TT struct {
-	Prefix  string `gql:"prefix=ttgo"`
-	Require require.Requirement
-	Aa      *Abd
+	Prefix        string `gql:"prefix=ttgo"`
+	ExplodeParams bool
+	Require       require.Requirement
+	Aa            *Abd
 }
 
 func aa() (string, error) {
@@ -49,7 +50,12 @@ func Ttta(p *Abc, r *require.Requirement) (int, error) {
 	return 1, nil
 }
 
-func (t TT) Nb(p *Abd) (int, error) {
+func (t TT) Nb(p *Abc) (int, error) {
+	data, err := json.Marshal(p)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Println(string(data))
 	return 1000, nil
 }
 
@@ -59,7 +65,7 @@ type AryItem struct {
 }
 
 type Abc struct {
-	UI  string     `json:"newa"`
+	UI  string     `json:"newa" gql:"desc=字符串"`
 	Ary []*AryItem `json:"ary"`
 	A   *AryItem
 	IO  AryItem

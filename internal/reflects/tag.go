@@ -14,15 +14,22 @@ const (
 	tagPrefix = "prefix"
 	tagLimit  = "limit"
 	tagRegexp = "regexp"
+	//tagExplodeParams = "explode"
+
 )
+
+//const (
+//	fieldPrefix  = "Prefix"
+//	fieldExplode = "ExplodeParams"
+//)
 
 // GqlTag 解析 tag
 type GqlTag struct {
-	FieldName  string // 字段名称,使用 json 定义，如果没有则使用 fieldName
-	Prefix     string // 所有函数的前缀
-	Descrption string // 说明
-	Limit      string // 限制
-	Regexp     string //正则表达式限制
+	FieldName   string // 字段名称,使用 json 定义，如果没有则使用 fieldName
+	Prefix      string // 所有函数的前缀
+	Description string // 说明
+	Limit       string // 限制
+	Regexp      string //正则表达式限制
 }
 
 func (tag *GqlTag) GenerateValidators(typ reflect.Type) []validators.Validator {
@@ -82,7 +89,7 @@ func ParseTag(field *reflect.StructField) *GqlTag {
 		}
 
 		gTag.Prefix = mp[tagPrefix] //  parseGqlPrefix(mp)
-		gTag.Descrption = mp[tagDesc]
+		gTag.Description = mp[tagDesc]
 		gTag.Regexp = mp[tagRegexp]
 		gTag.Limit = mp[tagLimit]
 	}

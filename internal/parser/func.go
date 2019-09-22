@@ -52,7 +52,7 @@ func (fd *FuncDef) CreateResolver(ivp *InputVarsPool,
 			// 解析
 			rp := &RequestParam{InputVars: ivp}
 			var err error
-			input, err = rp.Parse(&p, inputType)
+			input, err = rp.Parse(&p, inputType, fd.Struct != nil && fd.Struct.ExplodeParams)
 			if err != nil {
 				panic(err)
 			}

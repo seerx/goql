@@ -40,11 +40,16 @@ func (rm *ResolverManager) GenerateResolvers(ivp *parser.InputVarsPool,
 		}
 		if fn.RequestArg != nil {
 			// 有输入参数
-			in := ivp.ConvertToGraphQL(fn.RequestArg.Type)
-			item.Args = graphql.FieldConfigArgument{
-				"in": &graphql.ArgumentConfig{
-					Type: in,
-				},
+			if fn.Struct != nil && fn.Struct.ExplodeParams {
+				// 拆开输入参数
+				item.Args = ivp.GenerateArgs(fn.RequestArg.Type)
+			} else {
+				in := ivp.ConvertToGraphQL(fn.RequestArg.Type)
+				item.Args = graphql.FieldConfigArgument{
+					"in": &graphql.ArgumentConfig{
+						Type: in,
+					},
+				}
 			}
 		}
 

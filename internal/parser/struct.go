@@ -9,15 +9,19 @@ import (
 )
 
 // prefixField 前缀字段名称
-const prefixField = "Prefix"
+const (
+	prefixField  = "Prefix"        // 前缀
+	explodeField = "ExplodeParams" // 是否去参数的掉根结构定义
+)
 
 // StructDef 结构解析
 type StructDef struct {
-	Instance     interface{} // 注册时传入的结构实例
-	Type         reflect.Type
-	InjectFields []*InjectPair // 注入字段列表
-	RequireField string        // requirement
-	Prefix       string        // graphql 方法名称前缀
+	Instance      interface{} // 注册时传入的结构实例
+	Type          reflect.Type
+	InjectFields  []*InjectPair // 注入字段列表
+	RequireField  string        // requirement
+	Prefix        string        // graphql 方法名称前缀
+	ExplodeParams bool          // 是否剥去参数第一层结构
 }
 
 type InjectPair struct {
@@ -46,6 +50,9 @@ func ParseStruct(instance interface{},
 			// 解析前缀
 			tag := reflects.ParseTag(&fd)
 			def.Prefix = tag.Prefix
+		} else if fd.Name == explodeField {
+			// 是否剥去外层结构
+			def.ExplodeParams = true
 		} else {
 			fdTyp := reflects.ParseField(&fd)
 			if require.IsRequirement(fdTyp.Type) {

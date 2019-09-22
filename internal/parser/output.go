@@ -86,7 +86,7 @@ func (ovp *OutputVarsPool) ConvertToGraphQL(typ reflect.Type) graphql.Output {
 		gqlField := &graphql.Field{
 			Type:        ovp.ConvertToGraphQL(fd.Type),
 			Name:        tg.FieldName,
-			Description: tg.Descrption,
+			Description: tg.Description,
 		}
 		objFields[tg.FieldName] = gqlField
 	}

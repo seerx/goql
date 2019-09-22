@@ -13,9 +13,10 @@ import (
 )
 
 type InputVar struct {
-	//GqlInput  graphql.Input
+	GqlInput   graphql.Input
 	JSONName   string
 	FieldName  string
+	Descrpiton string
 	Type       *reflects.TypeDef
 	ItemVar    *InputVar              // Slice 元素类型
 	Children   []*InputVar            // 结构属性类型
@@ -50,12 +51,28 @@ func (ivp *InputVarsPool) FindInputVar(typ reflect.Type) *InputVar {
 	return nil
 }
 
+func (ivp *InputVarsPool) GenerateArgs(typ reflect.Type) graphql.FieldConfigArgument {
+	_, vars := ivp.convertToGraphQL(typ, true)
+	//vars.Children
+	//args := &graphql.FieldConfigArgument{}
+	mp := map[string]*graphql.ArgumentConfig{}
+	//args := []*graphql.FieldConfigArgument{}
+	for _, v := range vars.Children {
+
+		mp[v.JSONName] = &graphql.ArgumentConfig{
+			Type:        v.GqlInput,
+			Description: v.Descrpiton,
+		}
+	}
+	return graphql.FieldConfigArgument(mp)
+}
+
 func (ivp *InputVarsPool) ConvertToGraphQL(typ reflect.Type) graphql.Input {
-	input, _ := ivp.convertToGraphQL(typ)
+	input, _ := ivp.convertToGraphQL(typ, false)
 	return input
 }
 
-func (ivp *InputVarsPool) convertToGraphQL(typ reflect.Type) (graphql.Input, *InputVar) {
+func (ivp *InputVarsPool) convertToGraphQL(typ reflect.Type, rootParam bool) (graphql.Input, *InputVar) {
 	tag := typ.Name() + "@" + typ.PkgPath()
 	tp := reflects.ParseType(typ)
 	if tp.IsPrimitive {
@@ -104,7 +121,7 @@ func (ivp *InputVarsPool) convertToGraphQL(typ reflect.Type) (graphql.Input, *In
 		if tp.IsSlice {
 			// 列表
 			var itemType graphql.Input
-			itemType, sliceItamVar = ivp.convertToGraphQL(tp.RealType)
+			itemType, sliceItamVar = ivp.convertToGraphQL(tp.RealType, false)
 			gobj = graphql.NewList(itemType)
 		} else {
 			// 结构
@@ -118,9 +135,9 @@ func (ivp *InputVarsPool) convertToGraphQL(typ reflect.Type) (graphql.Input, *In
 	}
 
 	in = &InputVar{
-		Type:    tp,
-		ItemVar: sliceItamVar,
-		//GqlInput: gobj,
+		Type:     tp,
+		ItemVar:  sliceItamVar,
+		GqlInput: gobj,
 	}
 
 	//if tp.IsSlice {
@@ -133,11 +150,15 @@ func (ivp *InputVarsPool) convertToGraphQL(typ reflect.Type) (graphql.Input, *In
 	//} else {
 	//	in.GqlInput = gobj
 	//}
-	ivp.varMap[typ] = in
-	ivp.gqlObjectMap[varName] = gtpair{
-		Input: gobj,
-		Var:   in,
+	if !rootParam {
+		// 注册 graphql 类型
+		ivp.gqlObjectMap[varName] = gtpair{
+			Input: gobj,
+			Var:   in,
+		}
 	}
+	// 注册参数类型
+	ivp.varMap[typ] = in
 
 	//fmt.Println("Struct", tp.Name)
 	// 确定是结构
@@ -148,17 +169,19 @@ func (ivp *InputVarsPool) convertToGraphQL(typ reflect.Type) (graphql.Input, *In
 		if tg.FieldName == "" {
 			continue
 		}
-		gvar, ivar := ivp.convertToGraphQL(fd.Type)
+		gvar, ivar := ivp.convertToGraphQL(fd.Type, false)
 		child := &InputVar{
-			//GqlInput:  gvar,
-			JSONName:  tg.FieldName,
-			FieldName: fd.Name,
-			Type:      reflects.ParseField(&fd),
+			GqlInput:   gvar,
+			JSONName:   tg.FieldName,
+			FieldName:  fd.Name,
+			Type:       reflects.ParseField(&fd),
+			Descrpiton: tg.Description,
 			//Children:  ivar.Children,
 		}
 		if ivar == nil {
 			// 原生类型，解析数据检查列表
 			child.Validators = tg.GenerateValidators(fd.Type)
+
 		} else {
 			// 非原生类型
 			child.ItemVar = ivar.ItemVar
@@ -169,7 +192,7 @@ func (ivp *InputVarsPool) convertToGraphQL(typ reflect.Type) (graphql.Input, *In
 		in.Children = append(in.Children, child)
 		gqlField := &graphql.InputObjectFieldConfig{
 			Type:        gvar,
-			Description: tg.Descrption,
+			Description: tg.Description,
 			//Name:        tg.FieldName,
 		}
 		//fmt.Println("Struct", tp.Name, "Field", tg.FieldName)

@@ -16,15 +16,19 @@ type RequestParam struct {
 	Require   *require.Requirement
 }
 
-func (rp *RequestParam) Parse(p *graphql.ResolveParams, typ *reflects.TypeDef) (reflect.Value, error) {
-	in := p.Args["in"]
+func (rp *RequestParam) Parse(p *graphql.ResolveParams, typ *reflects.TypeDef, explodeParams bool) (reflect.Value, error) {
+	ivar := rp.InputVars.FindInputVar(typ.Type)
 	rp.Require = require.New()
+	if explodeParams {
+		return rp.parseParam("", ivar, p.Args, false)
+	}
+	in := p.Args["in"]
 
 	//if !ok {
 	//	return reflect.ValueOf(nil), fmt.Errorf("Required arguments: in")
 	//}
 	// 如果打散顶层结构，则使用 p.Args 做参数
-	ivar := rp.InputVars.FindInputVar(typ.Type)
+	//ivar := rp.InputVars.FindInputVar(typ.Type)
 	// 开始递归解析
 	return rp.parseParam("", ivar, in, false)
 }

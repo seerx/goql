@@ -7,3 +7,8 @@ require (
 	github.com/seerx/goql latest
 )
 </pre>
+
+# exapmles
+<ol>
+    <li><a href="https://github.com/seerx/goql/tree/master/examples/hello">Hello graphql</a></li>
+</ol>

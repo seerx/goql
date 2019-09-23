@@ -5,10 +5,12 @@ import (
 	"github.com/seerx/goql/examples/util"
 )
 
+func hello() (string, error) {
+	return "Hello graphql!", nil
+}
+
 func main() {
 	g := goql.Get()
-	g.RegisterQuery(func() (string, error) {
-		return "Hello goql!", nil
-	})
+	g.RegisterQuery(hello)
 	util.StartService(8080)
 }

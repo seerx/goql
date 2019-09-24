@@ -16,14 +16,14 @@ import (
 // OutputVarsPool 输出变量管理
 type OutputVarsPool struct {
 	log    log.Logger
-	varMap map[reflect.Type]graphql.Output
+	varMap map[string]graphql.Output
 }
 
 // NewOutputVarsPool 新建输出对象管理
 func NewOutputVarsPool(log log.Logger) *OutputVarsPool {
 	return &OutputVarsPool{
 		log:    log,
-		varMap: map[reflect.Type]graphql.Output{},
+		varMap: map[string]graphql.Output{},
 	}
 }
 
@@ -43,13 +43,18 @@ func (ovp *OutputVarsPool) ConvertToGraphQL(typ reflect.Type) graphql.Output {
 			// 切片
 			out = graphql.NewList(gobj)
 		}
-		ovp.varMap[typ] = out
+		//ovp.varMap[typ] = out
 		return out
+	}
+
+	varName := tp.Name
+	if tp.IsSlice {
+		varName += "s"
 	}
 
 	var ok bool
 	// 去变量表中查找
-	out, ok = ovp.varMap[typ]
+	out, ok = ovp.varMap[varName]
 	if ok {
 		// 找到，直接返回
 		ovp.log.Debug("Find in pool:" + tag)
@@ -58,13 +63,13 @@ func (ovp *OutputVarsPool) ConvertToGraphQL(typ reflect.Type) graphql.Output {
 
 	// 没找到
 
-	ovp.log.Debug("Create type: " + tag)
+	ovp.log.Debug("Create type: " + varName)
 
 	// 非原生类型，一般指结构类型
 	//name := tp.Name
 	objFields := graphql.Fields{}
 	gobj := graphql.NewObject(graphql.ObjectConfig{
-		Name:   tp.Name,
+		Name:   varName,
 		Fields: objFields,
 	})
 
@@ -74,7 +79,7 @@ func (ovp *OutputVarsPool) ConvertToGraphQL(typ reflect.Type) graphql.Output {
 	} else {
 		out = gobj
 	}
-	ovp.varMap[typ] = out
+	ovp.varMap[varName] = out
 
 	for n := 0; n < tp.RealType.NumField(); n++ {
 		fd := tp.RealType.Field(n)

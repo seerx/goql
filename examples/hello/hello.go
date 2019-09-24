@@ -9,6 +9,9 @@ func hello() (string, error) {
 	return "Hello graphql!", nil
 }
 
+//go:generate echo hello
+//go:generate go build ./hello.go
+
 func main() {
 	g := goql.Get()
 	g.RegisterQuery(hello)

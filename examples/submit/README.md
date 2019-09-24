@@ -25,6 +25,8 @@ func StudentByID(req *StudentRequest) (*Student, error) {
 </pre>
 上面的代码实现了根据 ID 查询学生的功能，不用那些繁琐的配置信息，只需要关注具体业务即可，怎么样？轻松吧?
 
+## 注意，接收提交的参数必须使用 struct，且必须定义为指针类型，这是硬性规定
+
 现在测试一下：
 打开 GraphiQl 客户端，在查询编辑框中输入
 <pre>

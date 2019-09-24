@@ -11,10 +11,10 @@
 打开 GraphiQl 客户端，在查询编辑框中输入
 <pre>
 { 
-  StudentByID(in:{ID:2}) {
-    ID
-    Name
-    Class
+  Query(id:1) {
+    id
+    name
+    class
   }
 }
 </pre>
@@ -22,10 +22,10 @@
 <pre>
 {
   "data": {
-    "StudentByID": {
-      "Class": "1(1)",
-      "ID": 2,
-      "Name": "小红"
+    "Query": {
+      "class": "1(1)",
+      "id": 1,
+      "name": "小明"
     }
   }
 }

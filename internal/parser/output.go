@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"reflect"
 
 	"github.com/seerx/goql/pkg/log"
@@ -13,17 +14,22 @@ import (
 
 //func ()
 
+type outputPair struct {
+	pkg    string
+	output graphql.Output
+}
+
 // OutputVarsPool 输出变量管理
 type OutputVarsPool struct {
 	log    log.Logger
-	varMap map[string]graphql.Output
+	varMap map[string]*outputPair
 }
 
 // NewOutputVarsPool 新建输出对象管理
 func NewOutputVarsPool(log log.Logger) *OutputVarsPool {
 	return &OutputVarsPool{
 		log:    log,
-		varMap: map[string]graphql.Output{},
+		varMap: map[string]*outputPair{},
 	}
 }
 
@@ -54,13 +60,19 @@ func (ovp *OutputVarsPool) ConvertToGraphQL(typ reflect.Type) graphql.Output {
 
 	var ok bool
 	// 去变量表中查找
-	out, ok = ovp.varMap[varName]
+	//os.IsExist()
+	existType, ok := ovp.varMap[varName]
+	//out, ok = ovp.varMap[varName]
 	if ok {
 		// 找到，直接返回
+		if existType.pkg != tp.Package {
+			// 名称相同，但是所在包不同，报出错误
+			panic(fmt.Errorf("Output type <%s> exist while defining from package [%s] \n<%s> is defined in package [%s] before", varName, tp.Package, varName, existType.pkg))
+		}
+		out = existType.output
 		ovp.log.Debug("Find in pool:" + tag)
 		return out
 	}
-
 	// 没找到
 
 	ovp.log.Debug("Create type: " + varName)
@@ -79,7 +91,10 @@ func (ovp *OutputVarsPool) ConvertToGraphQL(typ reflect.Type) graphql.Output {
 	} else {
 		out = gobj
 	}
-	ovp.varMap[varName] = out
+	ovp.varMap[varName] = &outputPair{
+		output: out,
+		pkg:    tp.Package,
+	}
 
 	for n := 0; n < tp.RealType.NumField(); n++ {
 		fd := tp.RealType.Field(n)

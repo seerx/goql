@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 // TypeDef 类型定义
@@ -85,8 +86,26 @@ func (td *TypeDef) CheckType() error {
 }
 
 func (td *TypeDef) Key() string {
-	return fmt.Sprintf("%s.%s", td.Package, td.Name)
+	pkg := strings.ReplaceAll(td.Package, ".", "_")
+	pkg = strings.ReplaceAll(pkg, "/", "__")
+	return fmt.Sprintf("%s_%s", td.Name, pkg)
 }
+
+//func (td *TypeDef) GenerateVarName(slice bool, deep int) string {
+//	if deep < 0 {
+//		deep = 0
+//	}
+//	pkg := strings.ReplaceAll(td.Package, ".", "/")
+//	ary := strings.Split(pkg, "/")
+//	count := 0
+//	for n := len(ary); n >= 0; n-- {
+//		if count >= deep {
+//			break
+//		}
+//		//item := ary[n]
+//
+//	}
+//}
 
 func (td *TypeDef) Summary() string {
 	return "package: " + td.Package +

@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"fmt"
 	"reflect"
 
 	"github.com/seerx/goql/internal/reflects/validators"
@@ -21,6 +22,7 @@ type InputVar struct {
 	ItemVar    *InputVar              // Slice 元素类型
 	Children   []*InputVar            // 结构属性类型
 	Validators []validators.Validator // 数据有效性检查
+	pkg        string                 // 结构定义所在包
 }
 
 type gtpair struct {
@@ -108,6 +110,11 @@ func (ivp *InputVarsPool) convertToGraphQL(typ reflect.Type, rootParam bool) (gr
 	// 去变量表中查找
 	pair, ok := ivp.gqlObjectMap[varName]
 	if ok {
+		if pair.Var.pkg != tp.Package {
+			// 名称相同，但是所在包不同，报出错误
+			panic(fmt.Errorf("Input type <%s> exist while defining from package [%s] \n<%s> is defined in package [%s] before", varName, tp.Package, varName, pair.Var.pkg))
+		}
+
 		// 找到，直接返回
 		ivp.log.Debug("Find in pool:" + varName)
 		//ivar, ok := ivp.varMap[typ]

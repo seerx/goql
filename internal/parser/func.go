@@ -244,7 +244,7 @@ func ParseFunc(fnObj reflect.Value,
 				// 注入类型
 				def.Args[n] = &FuncParam{
 					Arg: &InjectArg{
-						IsInterface: false,
+						IsInterface: true,
 						Inject:      inject,
 					},
 					Typ: typ,

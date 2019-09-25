@@ -3,5 +3,13 @@ github.com/graphql-go/graphql v0.7.8 h1:769CR/2JNAhLG9+aa8pfLkKdR0H+r5lsQqling5W
 github.com/graphql-go/graphql v0.7.8/go.mod h1:k6yrAYQaSP59DC5UVxbgxESlmVyojThKdORUqGDGmrI=
 github.com/graphql-go/handler v0.2.3 h1:CANh8WPnl5M9uA25c2GBhPqJhE53Fg0Iue/fRNla71E=
 github.com/graphql-go/handler v0.2.3/go.mod h1:leLF6RpV5uZMN1CdImAxuiayrYYhOk33bZciaUGaXeU=
+github.com/julienschmidt/httprouter v1.2.0 h1:TDTW5Yz1mjftljbcKqRcrYhd4XeOoI98t+9HbQbYf7g=
+github.com/julienschmidt/httprouter v1.2.0/go.mod h1:SYymIcj16QtmaHHD7aYtjjsJG7VTCxuUUipMqKk8s4w=
+github.com/satori/go.uuid v1.2.0/go.mod h1:dA0hQrYB0VpLJoorglMZABFdXlWrHn1NEOzdhQKdks0=
+github.com/seerx/got v0.0.0-20190826070543-824be1c785b3 h1:yFsW2tM6JvAVMu6ckJ3oLv2oJqJAbQBOXy+/H93cjPM=
+github.com/seerx/got v0.0.0-20190826070543-824be1c785b3/go.mod h1:L/YQOfEom/bF7xWDdWrtirIaCCyc5QWvFQKw9nVhEeA=
+github.com/seerx/gql v0.0.0-20190718094911-f8d269badfe2/go.mod h1:8SObjoxg3KTqXPet4ZCrBgk8b/fK0DRXbmMbMztkm+4=
 github.com/seerx/gql v0.0.0-20190815023326-958bb4feb410 h1:5e1pCntCSPz0ghJhpsJpNOtcDSZe33ZyovWLNhVmj9Q=
 github.com/seerx/gql v0.0.0-20190815023326-958bb4feb410/go.mod h1:8SObjoxg3KTqXPet4ZCrBgk8b/fK0DRXbmMbMztkm+4=
+github.com/seerx/gql v0.0.0-20190923060740-d986d38842f4 h1:oS/oYWjIkLBfQ626c+Jhvwy+4Y3a6zs09CoST5/T+Rg=
+github.com/seerx/gql v0.0.0-20190923060740-d986d38842f4/go.mod h1:8SObjoxg3KTqXPet4ZCrBgk8b/fK0DRXbmMbMztkm+4=

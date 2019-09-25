@@ -35,7 +35,7 @@ type GQL struct {
 // NewGQL
 func NewGQL(logger log.Logger) *GQL {
 	if logger == nil {
-		logger = &log.DefaultLogger{}
+		logger = &SilentLogger{}
 	}
 	return &GQL{
 		log:           logger,

@@ -19,5 +19,5 @@ require (
     <li><a href="https://github.com/seerx/goql/tree/master/examples/http_request">得到 http.Request</a></li>
     <li><a href="https://github.com/seerx/goql/tree/master/examples/param_validate">参数验证</a></li>
     <li><a href="https://github.com/seerx/goql/tree/master/examples/auth">用户认证</a></li>
-    <li><a href="https://github.com/seerx/goql/tree/master/examples">和 httprouter 一起工作</a></li>
+    <li><a href="https://github.com/seerx/goql/tree/master/examples/with_httprouter">和 httprouter 一起工作</a></li>
 </ol>

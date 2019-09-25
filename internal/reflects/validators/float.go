@@ -103,11 +103,11 @@ func (v *FloatLimit) Check(val interface{}) error {
 		// 限制了最大值
 		if v.includeMax {
 			if n > v.max {
-				return fmt.Errorf("%s value must less then(or equal): %d", v.field, v.max)
+				return fmt.Errorf("%s value must less then(or equal): %f", v.field, v.max)
 			}
 		} else {
 			if n >= v.max {
-				return fmt.Errorf("%s value must less then: %d", v.field, v.max)
+				return fmt.Errorf("%s value must less then: %f", v.field, v.max)
 			}
 		}
 	}
@@ -115,11 +115,11 @@ func (v *FloatLimit) Check(val interface{}) error {
 		// 限制了最小值
 		if v.includeMin {
 			if n < v.min {
-				return fmt.Errorf("%s value must great then (or equal): %d", v.field, v.min)
+				return fmt.Errorf("%s value must great then (or equal): %f", v.field, v.min)
 			}
 		} else {
 			if n <= v.min {
-				return fmt.Errorf("%s value must great then : %d", v.field, v.min)
+				return fmt.Errorf("%s value must great then : %f", v.field, v.min)
 			}
 		}
 	}

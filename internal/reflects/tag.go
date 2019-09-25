@@ -59,7 +59,7 @@ func (tag *GqlTag) GenerateValidators(typ reflect.Type) []validators.Validator {
 	}
 	if tag.Regexp != "" {
 		if types.IsString(typ.Kind()) {
-			v := validators.CreateRegexpValidator(tag.FieldName, tag.Limit)
+			v := validators.CreateRegexpValidator(tag.FieldName, tag.Regexp)
 			if v != nil {
 				validatorAry = append(validatorAry, v)
 			}

@@ -18,7 +18,10 @@ func (v *RegexpValidator) Check(val interface{}) error {
 	if !ok {
 		return typeError("string")
 	}
-	if !v.regex.Match([]byte(str)) {
+	found := v.regex.FindString(str)
+	//v.regex.MatchString(str)
+	if found != str {
+		//if !v.regex.Match([]byte(str)) {
 		return fmt.Errorf("%s's value do not match with regular expression %s", v.field, v.regstr)
 	}
 	return nil

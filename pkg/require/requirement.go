@@ -30,7 +30,7 @@ func (r *Requirement) Add(param string) {
 
 func (r *Requirement) Requires(params ...string) {
 	for _, p := range params {
-		if _, ok := r.missMap[p]; ok {
+		if _, ok := r.missMap[p]; !ok {
 			panic(fmt.Errorf("Require param %s", p))
 		}
 	}

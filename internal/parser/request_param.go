@@ -34,18 +34,21 @@ func (rp *RequestParam) Parse(p *graphql.ResolveParams, typ *reflects.TypeDef, e
 }
 
 func (rp *RequestParam) parseParam(parentParam string, ivar *InputVar, input interface{}, forcePtr bool) (reflect.Value, error) {
-	if input == nil {
-		//fmt.Println("解析:", parentParam+"."+ivar.JSONName, " 无数据")
-		//if parentParam != "" {
-		//	rp.Require.Add(parentParam + "." + ivar.JSONName)
-		//} else {
-		//	rp.Require.Add(ivar.JSONName)
-		//}
-		return reflect.ValueOf(nil), nil
-	}
+	//if input == nil {
+	//	//fmt.Println("解析:", parentParam+"."+ivar.JSONName, " 无数据")
+	//	//if parentParam != "" {
+	//	//	rp.Require.Add(parentParam + "." + ivar.JSONName)
+	//	//} else {
+	//	//	rp.Require.Add(ivar.JSONName)
+	//	//}
+	//	return reflect.ValueOf(nil), nil
+	//}
 	typ := ivar.Type
 	if typ.IsSlice {
 		// 列表
+		if input == nil {
+			return reflect.MakeSlice(typ.Type, 0, 0), nil
+		}
 		//ivp := rp.InputVars
 		//vr := ivp.FindInputVar(typ.RealType)
 		ary, ok := input.([]interface{})
@@ -73,32 +76,33 @@ func (rp *RequestParam) parseParam(parentParam string, ivar *InputVar, input int
 	} else if typ.IsStruct {
 		//ivp := rp.InputVars
 		//u := ivp.ConvertToGraphQL(typ.Type)
-		data, ok := input.(map[string]interface{})
-		if !ok {
-			panic(fmt.Errorf("Cann't parse %s as struct", ivar.FieldName))
-		}
-
 		// 结构
 		val := reflect.New(typ.RealType)
 		elem := val.Elem()
 
-		for _, child := range ivar.Children {
-			v, ok := data[child.JSONName]
-			pParam := child.JSONName
-			if parentParam != "" {
-				pParam = parentParam + "." + pParam
+		if input != nil {
+			data, ok := input.(map[string]interface{})
+			if !ok {
+				panic(fmt.Errorf("Cann't parse %s as struct", ivar.FieldName))
 			}
 
-			if ok {
-				fd := elem.FieldByName(child.FieldName)
-				//fd.Set()
-				wrapedData, err := rp.parseParam(pParam, child, v, false)
-				if err != nil {
-					return reflect.ValueOf(nil), err
+			for _, child := range ivar.Children {
+				v, ok := data[child.JSONName]
+				pParam := child.JSONName
+				if parentParam != "" {
+					pParam = parentParam + "." + pParam
 				}
-				fd.Set(wrapedData)
-			} else {
-				rp.Require.Add(pParam)
+
+				if ok {
+					fd := elem.FieldByName(child.FieldName)
+					//fd.Set()
+					wrapedData, err := rp.parseParam(pParam, child, v, false)
+					if err != nil {
+						return reflect.ValueOf(nil), err
+					}
+					fd.Set(wrapedData)
+					rp.Require.Add(pParam)
+				}
 			}
 		}
 		if typ.IsPtr || forcePtr {
@@ -107,6 +111,9 @@ func (rp *RequestParam) parseParam(parentParam string, ivar *InputVar, input int
 		return elem, nil
 	} else if typ.IsPrimitive {
 		// 原生类型
+		if input == nil {
+			return reflect.ValueOf(nil), nil
+		}
 		// 检查数据合法性
 		for _, cker := range ivar.Validators {
 			if err := cker.Check(input); err != nil {

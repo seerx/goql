@@ -31,11 +31,15 @@ type StructArg struct {
 
 func (arg *StructArg) CreateValue(ctx *ArgContext) reflect.Value {
 	// 结构体参数
+	var argIn reflect.Value
 	var structArg reflect.Value
 	if arg.Def != nil {
 		structArg = reflect.New(arg.Def.Type)
-		if !arg.IsPtr {
+		if arg.IsPtr {
+			argIn = structArg
 			structArg = structArg.Elem()
+		} else {
+			argIn = structArg.Elem()
 		}
 
 		if arg.Def.RequireField != "" {
@@ -56,12 +60,18 @@ func (arg *StructArg) CreateValue(ctx *ArgContext) reflect.Value {
 		for _, fd := range arg.Def.InjectFields {
 			fdVal := fd.Inject.InjectValue(ctx.Param)
 			sfd := structArg.FieldByName(fd.Field)
-			sfd.Set(fdVal)
+
+			if sfd.Type().Kind() != reflect.Ptr {
+				sfd.Set(fdVal.Elem())
+			} else {
+				sfd.Set(fdVal)
+			}
+
 			// 存储注入值
 			ctx.InjectValueMap[fd.Inject.Type] = fdVal
 		}
 	}
-	return structArg
+	return argIn
 }
 
 func (StructArg) IsInjectInterface() bool {

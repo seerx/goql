@@ -1,5 +1,6 @@
 # 自动注入及辅助能力
-该例实现了参数自动注入功能，可以实现 Resolver 函数的参数或其承载结构中的参数自动注入。
+该例实现了参数自动注入功能，可以实现 Resolver 函数的参数或其承载结构中的成员变量自动注入。
+只要合理使用注入功能，可以大量减少重复性开发工作，并降低错误出现率
 <br>
 所谓注入，还是需要自己实现注入函数，然后注册。注入的核心代码如下
 <pre>
@@ -22,7 +23,7 @@ func InjectClass(ctx context.Context, r *http.Request, gp *graphql.ResolveParams
     }
 }
 </pre>
-需要注意的是，注入函数必须是一下形式，返回的类型即为注入的类型，可以是指向结构的指针，也可以是一个 interface
+需要注意的是，注入函数必须是以下形式，返回的类型即为注入的类型，可以是指向结构的指针，也可以是一个 interface
 <pre>
 func (ctx context.Context, r *http.Request, gp *graphql.ResolveParams) *YourType {
 </pre>

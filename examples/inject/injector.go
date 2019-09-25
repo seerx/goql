@@ -10,7 +10,7 @@ import (
 
 func init() {
 	g := goql.Get()
-	g.RegisterInject(InjectClass)
+	g.RegisterInject(InjectClass) // 注册注入函数
 }
 
 // 要注入的对象

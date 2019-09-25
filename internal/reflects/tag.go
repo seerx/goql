@@ -79,13 +79,19 @@ func ParseTag(field *reflect.StructField) *GqlTag {
 		mp := map[string]string{}
 		ary := strings.Split(gqlTag, ",")
 		for _, item := range ary {
-			sub := strings.Split(item, "=")
-			if len(sub) == 1 {
-				mp[sub[0]] = sub[0]
+			p := strings.Index(item, "=")
+			if p < 0 {
+				mp[item] = item
+			} else {
+				mp[item[:p]] = item[p+1:]
 			}
-			if len(sub) == 2 {
-				mp[sub[0]] = sub[1]
-			}
+			//sub := strings.Split(item, "=")
+			//if len(sub) == 1 {
+			//	mp[sub[0]] = sub[0]
+			//}
+			//if len(sub) == 2 {
+			//	mp[sub[0]] = sub[1]
+			//}
 		}
 
 		gTag.Prefix = mp[tagPrefix] //  parseGqlPrefix(mp)

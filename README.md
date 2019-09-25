@@ -17,6 +17,7 @@ require (
     <li><a href="https://github.com/seerx/goql/tree/master/examples/docs">API 及参数的说明信息</a></li>
     <li><a href="https://github.com/seerx/goql/tree/master/examples/inject">自动注入及辅助能力</a></li>
     <li><a href="https://github.com/seerx/goql/tree/master/examples/http_request">得到 http.Request</a></li>
-    <li>简单的参数验证</li>
-    <li>简单的登录认证</li>
+    <li><a href="https://github.com/seerx/goql/tree/master/examples/param_validate">参数验证</a></li>
+    <li><a href="https://github.com/seerx/goql/tree/master/examples/auth">用户认证</a></li>
+    <li><a href="https://github.com/seerx/goql/tree/master/examples">和 httprouter 一起工作</a></li>
 </ol>

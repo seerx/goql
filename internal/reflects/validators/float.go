@@ -22,6 +22,8 @@ type FloatLimit struct {
 	limitMin   bool
 	min        float64
 	includeMin bool
+
+	errorFmt string
 }
 
 // CreateFloatLimit 解析 limit 内容
@@ -91,6 +93,8 @@ func CreateFloatLimit(fieldName string, exp string) *FloatLimit {
 			v.limitMax = true
 		}
 	}
+	v.errorFmt = getFmt(v.field, "value", v.limitMax, fmt.Sprintf("%f", v.max), v.includeMax,
+		v.limitMin, fmt.Sprintf("%f", v.min), v.includeMin, "%f")
 	return v
 }
 
@@ -103,11 +107,11 @@ func (v *FloatLimit) Check(val interface{}) error {
 		// 限制了最大值
 		if v.includeMax {
 			if n > v.max {
-				return fmt.Errorf("%s value must less then(or equal): %f", v.field, v.max)
+				return fmt.Errorf(v.errorFmt, n)
 			}
 		} else {
 			if n >= v.max {
-				return fmt.Errorf("%s value must less then: %f", v.field, v.max)
+				return fmt.Errorf(v.errorFmt, n)
 			}
 		}
 	}
@@ -115,11 +119,11 @@ func (v *FloatLimit) Check(val interface{}) error {
 		// 限制了最小值
 		if v.includeMin {
 			if n < v.min {
-				return fmt.Errorf("%s value must great then (or equal): %f", v.field, v.min)
+				return fmt.Errorf(v.errorFmt, n)
 			}
 		} else {
 			if n <= v.min {
-				return fmt.Errorf("%s value must great then : %f", v.field, v.min)
+				return fmt.Errorf(v.errorFmt, n)
 			}
 		}
 	}

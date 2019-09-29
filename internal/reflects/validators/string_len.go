@@ -22,6 +22,8 @@ type StringLimit struct {
 	limitMin   bool
 	min        int
 	includeMin bool
+
+	errorFmt string
 }
 
 // CreateStringLimit 解析 limit 内容
@@ -91,6 +93,8 @@ func CreateStringLimit(fieldName string, exp string) *StringLimit {
 			v.limitMax = true
 		}
 	}
+	v.errorFmt = getFmt(v.field, "length", v.limitMax, fmt.Sprintf("%d", v.max), v.includeMax,
+		v.limitMin, fmt.Sprintf("%d", v.min), v.includeMin, "%d")
 	return v
 }
 
@@ -104,11 +108,11 @@ func (v *StringLimit) Check(val interface{}) error {
 		// 限制了最大值
 		if v.includeMax {
 			if n > v.max {
-				return fmt.Errorf("%s length must less then(or equal): %d", v.field, v.max)
+				return fmt.Errorf(v.errorFmt, n)
 			}
 		} else {
 			if n >= v.max {
-				return fmt.Errorf("%s length must less then: %d", v.field, v.max)
+				return fmt.Errorf(v.errorFmt, n)
 			}
 		}
 	}
@@ -116,11 +120,11 @@ func (v *StringLimit) Check(val interface{}) error {
 		// 限制了最小值
 		if v.includeMin {
 			if n < v.min {
-				return fmt.Errorf("%s length must great then (or equal): %d", v.field, v.min)
+				return fmt.Errorf(v.errorFmt, n)
 			}
 		} else {
 			if n <= v.min {
-				return fmt.Errorf("%s length must great then : %d", v.field, v.min)
+				return fmt.Errorf(v.errorFmt, n)
 			}
 		}
 	}

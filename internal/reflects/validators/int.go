@@ -22,6 +22,8 @@ type IntegerLimit struct {
 	limitMin   bool
 	min        int
 	includeMin bool
+
+	errorFmt string
 }
 
 // CreateIntegerLimit 解析 limit 内容
@@ -91,6 +93,8 @@ func CreateIntegerLimit(fieldName string, exp string) *IntegerLimit {
 			v.limitMax = true
 		}
 	}
+	v.errorFmt = getFmt(v.field, "value", v.limitMax, fmt.Sprintf("%d", v.max), v.includeMax,
+		v.limitMin, fmt.Sprintf("%d", v.min), v.includeMin, "%d")
 	return v
 }
 
@@ -103,11 +107,11 @@ func (v *IntegerLimit) Check(val interface{}) error {
 		// 限制了最大值
 		if v.includeMax {
 			if n > v.max {
-				return fmt.Errorf("%s value must less then(or equal): %d", v.field, v.max)
+				return fmt.Errorf(v.errorFmt, n)
 			}
 		} else {
 			if n >= v.max {
-				return fmt.Errorf("%s value must less then: %d", v.field, v.max)
+				return fmt.Errorf(v.errorFmt, n)
 			}
 		}
 	}
@@ -115,11 +119,11 @@ func (v *IntegerLimit) Check(val interface{}) error {
 		// 限制了最小值
 		if v.includeMin {
 			if n < v.min {
-				return fmt.Errorf("%s value must great then (or equal): %d", v.field, v.min)
+				return fmt.Errorf(v.errorFmt, n)
 			}
 		} else {
 			if n <= v.min {
-				return fmt.Errorf("%s value must great then : %d", v.field, v.min)
+				return fmt.Errorf(v.errorFmt, n)
 			}
 		}
 	}

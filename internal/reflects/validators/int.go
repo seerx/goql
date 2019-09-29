@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -23,11 +24,12 @@ type IntegerLimit struct {
 	min        int
 	includeMin bool
 
-	errorFmt string
+	errorFmt     string
+	errorMessage string
 }
 
 // CreateIntegerLimit 解析 limit 内容
-func CreateIntegerLimit(fieldName string, exp string) *IntegerLimit {
+func CreateIntegerLimit(fieldName string, exp string, errorMessage string) *IntegerLimit {
 	vp := strings.Index(exp, "$v")
 	if vp < 0 {
 		// 没有找到 $v
@@ -95,7 +97,15 @@ func CreateIntegerLimit(fieldName string, exp string) *IntegerLimit {
 	}
 	v.errorFmt = getFmt(v.field, "value", v.limitMax, fmt.Sprintf("%d", v.max), v.includeMax,
 		v.limitMin, fmt.Sprintf("%d", v.min), v.includeMin, "%d")
+	v.errorMessage = errorMessage
 	return v
+}
+
+func (v *IntegerLimit) generateError(n int) error {
+	if v.errorMessage != "" {
+		return errors.New(v.errorMessage)
+	}
+	return fmt.Errorf(v.errorFmt, n)
 }
 
 func (v *IntegerLimit) Check(val interface{}) error {
@@ -107,11 +117,11 @@ func (v *IntegerLimit) Check(val interface{}) error {
 		// 限制了最大值
 		if v.includeMax {
 			if n > v.max {
-				return fmt.Errorf(v.errorFmt, n)
+				return v.generateError(n)
 			}
 		} else {
 			if n >= v.max {
-				return fmt.Errorf(v.errorFmt, n)
+				return v.generateError(n)
 			}
 		}
 	}
@@ -119,11 +129,11 @@ func (v *IntegerLimit) Check(val interface{}) error {
 		// 限制了最小值
 		if v.includeMin {
 			if n < v.min {
-				return fmt.Errorf(v.errorFmt, n)
+				return v.generateError(n)
 			}
 		} else {
 			if n <= v.min {
-				return fmt.Errorf(v.errorFmt, n)
+				return v.generateError(n)
 			}
 		}
 	}

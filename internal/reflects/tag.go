@@ -10,10 +10,11 @@ import (
 )
 
 const (
-	tagDesc   = "desc"
-	tagPrefix = "prefix"
-	tagLimit  = "limit"
-	tagRegexp = "regexp"
+	tagDesc         = "desc"
+	tagPrefix       = "prefix"
+	tagLimit        = "limit"
+	tagRegexp       = "regexp"
+	tagErrorMessage = "error"
 	//tagExplodeParams = "explode"
 
 )
@@ -29,7 +30,8 @@ type GqlTag struct {
 	Prefix      string // 所有函数的前缀
 	Description string // 说明
 	Limit       string // 限制
-	Regexp      string //正则表达式限制
+	Regexp      string // 正则表达式限制
+	Error       string // 设置的错误提示
 }
 
 func (tag *GqlTag) GenerateValidators(typ reflect.Type) []validators.Validator {
@@ -37,21 +39,21 @@ func (tag *GqlTag) GenerateValidators(typ reflect.Type) []validators.Validator {
 
 	if tag.Limit != "" {
 		if types.IsInt(typ.Kind()) {
-			v := validators.CreateIntegerLimit(tag.FieldName, tag.Limit)
+			v := validators.CreateIntegerLimit(tag.FieldName, tag.Limit, tag.Error)
 			if v != nil {
 				validatorAry = append(validatorAry, v)
 			}
 		}
 
 		if types.IsFloat(typ.Kind()) {
-			v := validators.CreateFloatLimit(tag.FieldName, tag.Limit)
+			v := validators.CreateFloatLimit(tag.FieldName, tag.Limit, tag.Error)
 			if v != nil {
 				validatorAry = append(validatorAry, v)
 			}
 		}
 
 		if types.IsString(typ.Kind()) {
-			v := validators.CreateStringLimit(tag.FieldName, tag.Limit)
+			v := validators.CreateStringLimit(tag.FieldName, tag.Limit, tag.Error)
 			if v != nil {
 				validatorAry = append(validatorAry, v)
 			}
@@ -59,7 +61,7 @@ func (tag *GqlTag) GenerateValidators(typ reflect.Type) []validators.Validator {
 	}
 	if tag.Regexp != "" {
 		if types.IsString(typ.Kind()) {
-			v := validators.CreateRegexpValidator(tag.FieldName, tag.Regexp)
+			v := validators.CreateRegexpValidator(tag.FieldName, tag.Regexp, tag.Error)
 			if v != nil {
 				validatorAry = append(validatorAry, v)
 			}
@@ -98,6 +100,7 @@ func ParseTag(field *reflect.StructField) *GqlTag {
 		gTag.Description = mp[tagDesc]
 		gTag.Regexp = mp[tagRegexp]
 		gTag.Limit = mp[tagLimit]
+		gTag.Error = mp[tagErrorMessage]
 	}
 
 	return gTag

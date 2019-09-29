@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -23,11 +24,12 @@ type StringLimit struct {
 	min        int
 	includeMin bool
 
-	errorFmt string
+	errorFmt     string
+	errorMessage string
 }
 
 // CreateStringLimit 解析 limit 内容
-func CreateStringLimit(fieldName string, exp string) *StringLimit {
+func CreateStringLimit(fieldName string, exp string, errorMessage string) *StringLimit {
 	vp := strings.Index(exp, "$v")
 	if vp < 0 {
 		// 没有找到 $v
@@ -95,7 +97,15 @@ func CreateStringLimit(fieldName string, exp string) *StringLimit {
 	}
 	v.errorFmt = getFmt(v.field, "length", v.limitMax, fmt.Sprintf("%d", v.max), v.includeMax,
 		v.limitMin, fmt.Sprintf("%d", v.min), v.includeMin, "%d")
+	v.errorMessage = errorMessage
 	return v
+}
+
+func (v *StringLimit) generateError(n int) error {
+	if v.errorMessage != "" {
+		return errors.New(v.errorMessage)
+	}
+	return fmt.Errorf(v.errorFmt, n)
 }
 
 func (v *StringLimit) Check(val interface{}) error {
@@ -108,11 +118,11 @@ func (v *StringLimit) Check(val interface{}) error {
 		// 限制了最大值
 		if v.includeMax {
 			if n > v.max {
-				return fmt.Errorf(v.errorFmt, n)
+				return v.generateError(n)
 			}
 		} else {
 			if n >= v.max {
-				return fmt.Errorf(v.errorFmt, n)
+				return v.generateError(n)
 			}
 		}
 	}
@@ -120,11 +130,11 @@ func (v *StringLimit) Check(val interface{}) error {
 		// 限制了最小值
 		if v.includeMin {
 			if n < v.min {
-				return fmt.Errorf(v.errorFmt, n)
+				return v.generateError(n)
 			}
 		} else {
 			if n <= v.min {
-				return fmt.Errorf(v.errorFmt, n)
+				return v.generateError(n)
 			}
 		}
 	}

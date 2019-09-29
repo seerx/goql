@@ -19,19 +19,6 @@ func typeError(expected string) error {
 	return fmt.Errorf("expect type %s", expected)
 }
 
-const (
-	fmtMax  = "%s's %s must little then %s, but got "
-	fmtMaxE = "%s's %s must little then or equal %s, but got "
-
-	fmtMin  = "%s's %s must great then %s, but got "
-	fmtMinE = "%s's %s must great then or equal %s, but got "
-
-	fmtBetween   = "%s's %s must great then %s and little then %s, but got "
-	fmtBetweenEE = "%s's %s must great then or equal %s and little then or equal %s, but got "
-	fmtBetween_E = "%s's %s must great then %s and little then or equal %s, but got "
-	fmtBetweenE_ = "%s's %s must great then or equal %s and little then %s, but got "
-)
-
 func getFmt(field string, desc string,
 	limitMax bool,
 	max string,

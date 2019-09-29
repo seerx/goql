@@ -16,22 +16,22 @@
     </li>
     <li>浮点型
         <ol>
-            <li>limit=n<$v<br>大于 n</li>
-            <li>limit=n<=$v<br>大于等于 n </li>
-            <li>limit=$v<n<br>小于 n </li>
-            <li>limit=$v<=n <br>小于等于 </li>
-            <li>limit=n<$v<m<br>小于m大于n </li>
-            <li>limit=n<=$v<=m<br>小于等于m大于等于n </li>
+            <li>limit=n&lt;$v<br>大于 n</li>
+            <li>limit=n&lt;=$v<br>大于等于 n </li>
+            <li>limit=$v&lt;n<br>小于 n </li>
+            <li>limit=$v&lt;=n <br>小于等于 </li>
+            <li>limit=n&lt;$v&lt;m<br>小于m大于n </li>
+            <li>limit=n&lt;=$v&lt;=m<br>小于等于m大于等于n </li>
         </ol>
     </li>
     <li>字符串长度
         <ol>
-            <li>limit=n<$v<br>大于 n </li>
-            <li>limit=n<=$v<br>大于等于 n</li>
-            <li>limit=$v<n<br>小于 n</li>
-            <li>limit=$v<=n<br>小于等于 n</li>
-            <li>limit=n<$v<m<br>小于m大于n</li>
-            <li>limit=n<=$v<=m<br>小于等于m大于等于n</li>
+            <li>limit=n&lt;$v<br>大于 n </li>
+            <li>limit=n&lt;=$v<br>大于等于 n</li>
+            <li>limit=$v&lt;n<br>小于 n</li>
+            <li>limit=$v&lt;=n<br>小于等于 n</li>
+            <li>limit=n&lt;$v&lt;m<br>小于m大于n</li>
+            <li>limit=n&lt;=$v&lt;=m<br>小于等于m大于等于n</li>
         </ol>
     </li>
     <li>字符串正则表达式

@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/seerx/goql/internal/parser/types"
+	"github.com/seerx/goql/internal/types"
 
 	"github.com/seerx/goql/internal/reflects/validators"
 )

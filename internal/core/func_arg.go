@@ -1,9 +1,11 @@
-package parser
+package core
 
 import (
 	"reflect"
 
-	"github.com/seerx/goql/pkg/require"
+	"github.com/seerx/goql/pkg/param"
+
+	"github.com/seerx/goql/internal/inject"
 
 	"github.com/graphql-go/graphql"
 	"github.com/seerx/goql/internal/reflects"
@@ -13,7 +15,7 @@ type ArgContext struct {
 	Param          *graphql.ResolveParams
 	InjectValueMap map[reflect.Type]reflect.Value
 	Input          reflect.Value
-	Require        *require.Requirement
+	Require        *param.Requirement
 	//Validator      *param.InputValidator
 }
 
@@ -110,7 +112,7 @@ func (arg *RequireArg) IsInjectInterface() bool {
 // InjectArg 注入参数
 type InjectArg struct {
 	IsInterface bool
-	Inject      *InjectInfo
+	Inject      *inject.InjectInfo
 }
 
 func (arg *InjectArg) CreateValue(ctx *ArgContext) reflect.Value {

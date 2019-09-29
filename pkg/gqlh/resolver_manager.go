@@ -4,31 +4,33 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/seerx/goql/internal/varspool"
+
 	"github.com/seerx/goql/pkg/log"
 
 	"github.com/graphql-go/graphql"
 
-	"github.com/seerx/goql/internal/parser"
+	"github.com/seerx/goql/internal/core"
 	"github.com/seerx/goql/internal/reflects"
 )
 
 // ResolverManager 功能接口管理
 type ResolverManager struct {
 	log           log.Logger
-	resolverFuncs []*parser.FuncDef
-	resolverMap   map[string]*parser.FuncDef
+	resolverFuncs []*core.FuncDef
+	resolverMap   map[string]*core.FuncDef
 }
 
 // NewResolverManager 创建
 func NewResolverManager(log log.Logger) *ResolverManager {
 	return &ResolverManager{
 		log:         log,
-		resolverMap: map[string]*parser.FuncDef{},
+		resolverMap: map[string]*core.FuncDef{},
 	}
 }
 
-func (rm *ResolverManager) GenerateResolvers(ivp *parser.InputVarsPool,
-	ovp *parser.OutputVarsPool,
+func (rm *ResolverManager) GenerateResolvers(ivp *varspool.InputVarsPool,
+	ovp *varspool.OutputVarsPool,
 	callback func(name string, resolver *graphql.Field)) {
 	//vm := NewOutputVarsPool(rm.log)
 	for _, fn := range rm.resolverFuncs {
@@ -61,8 +63,8 @@ func (rm *ResolverManager) GenerateResolvers(ivp *parser.InputVarsPool,
 }
 
 // ParseStruct 解析结构中的方法
-func (rm *ResolverManager) ParseStruct(structInstance interface{}, injectQuery parser.InjectQuery) {
-	structDef, err := parser.ParseStruct(structInstance, injectQuery)
+func (rm *ResolverManager) ParseStruct(structInstance interface{}, injectQuery core.InjectQuery) {
+	structDef, err := core.ParseStruct(structInstance, injectQuery)
 	if err != nil {
 		rm.log.Error("ParseStruct: " + err.Error())
 		return
@@ -75,7 +77,7 @@ func (rm *ResolverManager) ParseStruct(structInstance interface{}, injectQuery p
 	for n := 0; n < mc; n++ {
 		method := typ.Type.Method(n)
 
-		if parser.IsDescFunc(method) {
+		if core.IsDescFunc(method) {
 			// 是描述函数，忽略
 			continue
 		}
@@ -85,7 +87,7 @@ func (rm *ResolverManager) ParseStruct(structInstance interface{}, injectQuery p
 			Struct:  typ.Name,
 			Package: typ.Package,
 		}
-		funcDef, err := parser.ParseFunc(method.Func, method.Type, info, structDef, injectQuery)
+		funcDef, err := core.ParseFunc(method.Func, method.Type, info, structDef, injectQuery)
 		if err != nil {
 			rm.log.Error(fmt.Sprintf("Invalid function Signature <%s> : %s", info.String(), err.Error()))
 			//rm.log.Error(fmt.Sprintf("&s.%s 无法解析:%s", typ.Name, method.Name, err.Error()))
@@ -108,12 +110,12 @@ func (rm *ResolverManager) ParseStruct(structInstance interface{}, injectQuery p
 }
 
 // ParserFunction 解析独立函数，不属于任何结构
-func (rm *ResolverManager) ParserFunction(funcObj interface{}, injectQuery parser.InjectQuery) {
+func (rm *ResolverManager) ParserFunction(funcObj interface{}, injectQuery core.InjectQuery) {
 	// 函数
 	info := reflects.ParseFuncInfo(funcObj)
 	fnTyp := reflect.TypeOf(funcObj)
 	fnObj := reflect.ValueOf(funcObj)
-	funcDef, err := parser.ParseFunc(fnObj, fnTyp, info, nil, injectQuery)
+	funcDef, err := core.ParseFunc(fnObj, fnTyp, info, nil, injectQuery)
 	if err != nil {
 		rm.log.Error(fmt.Sprintf("Invalid function Signature <%s> : %s", info.String(), err.Error()))
 		return

@@ -1,4 +1,4 @@
-package require
+package param
 
 import (
 	"fmt"

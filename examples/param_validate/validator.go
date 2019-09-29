@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/seerx/goql/pkg/param"
+
 	"github.com/seerx/goql"
 	"github.com/seerx/goql/examples/util"
-	"github.com/seerx/goql/pkg/require"
 )
 
 type Addr struct {
@@ -27,7 +28,7 @@ type Loader struct {
 }
 
 // SubmitInfo resolver 函数
-func (Loader) SubmitInfo(p *Param, r *require.Requirement) (string, error) {
+func (Loader) SubmitInfo(p *Param, r *param.Requirement) (string, error) {
 	r.Requires("name")
 
 	data, err := json.Marshal(p)

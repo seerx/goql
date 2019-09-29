@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/seerx/goql/internal/parser"
+	"github.com/seerx/goql/internal/inject"
 
 	"github.com/seerx/goql/pkg/log"
 
-	"github.com/seerx/goql/internal/parser/types"
+	"github.com/seerx/goql/internal/types"
 
 	"github.com/seerx/goql/internal/reflects"
 )
@@ -17,7 +17,7 @@ import (
 // InjectManager 注入管理
 type InjectManager struct {
 	log       log.Logger
-	injectMap map[reflect.Type]*parser.InjectInfo
+	injectMap map[reflect.Type]*inject.InjectInfo
 }
 
 var errOfInject = errors.New("Param injectFn must be a func  like -- func(ctx context.Context, r *http.Request, gp *graphql.ResolveParams) *returnType, and returnType must be a struct or interface")
@@ -26,12 +26,12 @@ var errOfInject = errors.New("Param injectFn must be a func  like -- func(ctx co
 func NewInjectManager(log log.Logger) *InjectManager {
 	return &InjectManager{
 		log:       log,
-		injectMap: map[reflect.Type]*parser.InjectInfo{},
+		injectMap: map[reflect.Type]*inject.InjectInfo{},
 	}
 }
 
 // FindInject 根据类型查找注入信息
-func (im *InjectManager) FindInject(typ reflect.Type) *parser.InjectInfo {
+func (im *InjectManager) FindInject(typ reflect.Type) *inject.InjectInfo {
 	info, ok := im.injectMap[typ]
 	if ok {
 		return info
@@ -94,7 +94,7 @@ func (im *InjectManager) AddInject(injectFn interface{}) {
 
 	// 注册
 	fnInfo := reflects.ParseFuncInfo(injectFn)
-	inject := &parser.InjectInfo{
+	inject := &inject.InjectInfo{
 		Type: outp.RealType,
 		Info: fnInfo,
 		Func: reflect.ValueOf(injectFn),

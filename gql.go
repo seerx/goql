@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"reflect"
 
-	"github.com/seerx/goql/internal/parser"
+	"github.com/seerx/goql/internal/inject"
+
+	"github.com/seerx/goql/internal/varspool"
 
 	"github.com/seerx/goql/pkg/log"
 
@@ -29,7 +31,7 @@ type GQL struct {
 
 	tobeQueries   []interface{} // 查询函数
 	tobeMutations []interface{} // 操作函数
-	inputVars     *parser.InputVarsPool
+	inputVars     *varspool.InputVarsPool
 }
 
 // NewGQL
@@ -76,8 +78,8 @@ func (g *GQL) CreateHandler(cfg *handler.Config) http.Handler {
 }
 
 func (g *GQL) GenerateSchema() (*graphql.Schema, error) {
-	g.inputVars = parser.NewInputVarsPool(g.log)
-	ovp := parser.NewOutputVarsPool(g.log)
+	g.inputVars = varspool.NewInputVarsPool(g.log)
+	ovp := varspool.NewOutputVarsPool(g.log)
 
 	cfg := graphql.SchemaConfig{}
 
@@ -143,7 +145,7 @@ func (g *GQL) RegisterMutate(funcLoader interface{}) {
 }
 
 func (g *GQL) parseFuncs(manager *gqlh.ResolverManager, resolveObject interface{}) error {
-	injectQuery := func(injectType reflect.Type) (info *parser.InjectInfo, e error) {
+	injectQuery := func(injectType reflect.Type) (info *inject.InjectInfo, e error) {
 		// 查询是否是注入类型，如果是，直接返回
 		inject := g.injectManager.FindInject(injectType)
 		return inject, nil

@@ -1,4 +1,4 @@
-package parser
+package core
 
 import (
 	"errors"
@@ -7,17 +7,21 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/seerx/goql/pkg/require"
+	"github.com/seerx/goql/pkg/param"
+
+	"github.com/seerx/goql/internal/inject"
+
+	"github.com/seerx/goql/internal/varspool"
 
 	"github.com/graphql-go/graphql"
 
-	"github.com/seerx/goql/internal/parser/types"
+	"github.com/seerx/goql/internal/types"
 
 	"github.com/seerx/goql/internal/reflects"
 )
 
 // InjectQuery 注入类型查询函数
-type InjectQuery func(injectType reflect.Type) (info *InjectInfo, e error)
+type InjectQuery func(injectType reflect.Type) (info *inject.InjectInfo, e error)
 
 // FuncProp 函数属性
 type FuncProp struct {
@@ -41,12 +45,12 @@ type FuncDef struct {
 	Prop       *FuncProp
 }
 
-func (fd *FuncDef) CreateResolver(ivp *InputVarsPool,
-	ovp *OutputVarsPool) func(p graphql.ResolveParams) (interface{}, error) {
+func (fd *FuncDef) CreateResolver(ivp *varspool.InputVarsPool,
+	ovp *varspool.OutputVarsPool) func(p graphql.ResolveParams) (interface{}, error) {
 	return func(p graphql.ResolveParams) (i interface{}, e error) {
 		// 解析请求参数
 		inputType := fd.RequestArg
-		require := require.New()
+		require := param.New()
 		var input reflect.Value
 		if inputType != nil {
 			// 解析
@@ -205,7 +209,7 @@ func ParseFunc(fnObj reflect.Value,
 				},
 				Typ: typ,
 			}
-		} else if require.IsRequirement(typ.Type) {
+		} else if param.IsRequirement(typ.Type) {
 			// Requirement
 			def.Args[n] = &FuncParam{
 				Arg: &RequireArg{

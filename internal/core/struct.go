@@ -1,11 +1,14 @@
-package parser
+package core
 
 import (
 	"fmt"
 	"reflect"
 
+	"github.com/seerx/goql/pkg/param"
+
+	"github.com/seerx/goql/internal/inject"
+
 	"github.com/seerx/goql/internal/reflects"
-	"github.com/seerx/goql/pkg/require"
 )
 
 // prefixField 前缀字段名称
@@ -25,13 +28,13 @@ type StructDef struct {
 }
 
 type InjectPair struct {
-	Field  string      // 对应结构属性名称
-	Inject *InjectInfo // 注入属性
+	Field  string             // 对应结构属性名称
+	Inject *inject.InjectInfo // 注入属性
 }
 
 // ParseStruct 解析 struct
 func ParseStruct(instance interface{},
-	injectQuery func(injectType reflect.Type) (*InjectInfo, error)) (*StructDef, error) {
+	injectQuery func(injectType reflect.Type) (*inject.InjectInfo, error)) (*StructDef, error) {
 	typ := reflects.ParseType(reflect.TypeOf(instance))
 	if !typ.IsStruct {
 		return nil, fmt.Errorf("%s 不是 struct 类型", typ.Name)
@@ -55,7 +58,7 @@ func ParseStruct(instance interface{},
 			def.ExplodeParams = true
 		} else {
 			fdTyp := reflects.ParseField(&fd)
-			if require.IsRequirement(fdTyp.Type) {
+			if param.IsRequirement(fdTyp.Type) {
 				// Requirement
 				def.RequireField = fd.Name
 			} else if fdTyp.IsInterface || fdTyp.IsStruct {

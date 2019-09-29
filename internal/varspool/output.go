@@ -1,4 +1,4 @@
-package parser
+package varspool
 
 import (
 	"fmt"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/seerx/goql/pkg/log"
 
-	"github.com/seerx/goql/internal/parser/types"
+	"github.com/seerx/goql/internal/types"
 
 	"github.com/graphql-go/graphql"
 	"github.com/seerx/goql/internal/reflects"

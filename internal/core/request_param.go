@@ -1,10 +1,12 @@
-package parser
+package core
 
 import (
 	"fmt"
 	"reflect"
 
-	"github.com/seerx/goql/pkg/require"
+	"github.com/seerx/goql/pkg/param"
+
+	"github.com/seerx/goql/internal/varspool"
 
 	"github.com/graphql-go/graphql"
 	"github.com/seerx/goql/internal/reflects"
@@ -12,13 +14,13 @@ import (
 
 // 解析请求参数
 type RequestParam struct {
-	InputVars *InputVarsPool
-	Require   *require.Requirement
+	InputVars *varspool.InputVarsPool
+	Require   *param.Requirement
 }
 
 func (rp *RequestParam) Parse(p *graphql.ResolveParams, typ *reflects.TypeDef, explodeParams bool) (reflect.Value, error) {
 	ivar := rp.InputVars.FindInputVar(typ.Type)
-	rp.Require = require.New()
+	rp.Require = param.New()
 	if explodeParams {
 		return rp.parseParam("", ivar, p.Args, false)
 	}
@@ -33,7 +35,7 @@ func (rp *RequestParam) Parse(p *graphql.ResolveParams, typ *reflects.TypeDef, e
 	return rp.parseParam("", ivar, in, false)
 }
 
-func (rp *RequestParam) parseParam(parentParam string, ivar *InputVar, input interface{}, forcePtr bool) (reflect.Value, error) {
+func (rp *RequestParam) parseParam(parentParam string, ivar *varspool.InputVar, input interface{}, forcePtr bool) (reflect.Value, error) {
 	//if input == nil {
 	//	//fmt.Println("解析:", parentParam+"."+ivar.JSONName, " 无数据")
 	//	//if parentParam != "" {

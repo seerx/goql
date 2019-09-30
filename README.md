@@ -1,6 +1,6 @@
 # goql
 Make easy to write graphql api with graphql-go<br>
-简化 graphql-go 开发步骤，增强部分功能，让开发人员可以把精力集中到业务中，而不是如何配置 graphql-go 上来。<br>
+简化 graphql-go 开发步骤，增强部分功能，让开发人员可以把精力集中到业务中，而不是如何去配置 graphql-go 。<br>
 使用方法参见 examples，有例程有说明。
 
 # usage

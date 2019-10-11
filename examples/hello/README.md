@@ -6,6 +6,7 @@ func hello() (string, error) {
 func main() {
     g := goql.Get()
     g.RegisterQuery(hello)
+    // g.RegisterMutate(hello)
     util.StartService(8080)
 }
 </pre>

@@ -23,5 +23,5 @@ func getInfo(account *AccountInfo)(*AccountInfo, error) {
     return account, nil
 }
 </pre>
-如果一堆 Resolver 需要认证，那么就用承载结构，把 AccountInfo 定义为承载类的成员变量即可
+如果一堆 Resolver 需要认证，那么就用承载结构，把 AccountInfo 定义为承载 struct 的成员变量即可
 

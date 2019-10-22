@@ -53,5 +53,5 @@ $v 代表了数值或字符串长度，所有验证大小的都使用 < 或者 <
 # require.Requirement
 必填参数由 require.Requirement 来决定。只要在 Resolver 函数参数中添加 *require.Requirement 即可以
 使用。需要注意的是 Requirement.Requires 函数接收的名称是 json Tag，如果没有定义 json Tag 则与成员变量名称一致；
-另外，Requirement.Requires 是自动解除最外层参数 in 的。<br>
+另外，Requirement.Requires 函数的参数名称是自动解除最外层参数 in 的。<br>
 具体的，还要自己去实验一下。

@@ -5,7 +5,7 @@
 <ol>
 <li>API 和参数都增加了说明信息，这才更graphql</li>
 <li>Resolver 函数不再是独立的 func，而是属于一个结构</li>
-<li>Resolver 函数参数可以直接使用 id 了，不需要写成 in:{id: 1}</li>
+<li>Resolver 函数参数可以直接使用 id 了；客户端发送请求时，不需要写成 in:{id: 1}</li>
 </ol>
 
 打开 GraphiQl 客户端，在查询编辑框中输入

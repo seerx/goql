@@ -145,6 +145,7 @@ func (ivp *InputVarsPool) convertToGraphQL(typ reflect.Type, rootParam bool) (gr
 		Type:     tp,
 		ItemVar:  sliceItamVar,
 		GqlInput: gobj,
+		pkg:      tp.Package,
 	}
 
 	//if tp.IsSlice {

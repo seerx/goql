@@ -53,7 +53,8 @@ func (ovp *OutputVarsPool) ConvertToGraphQL(typ reflect.Type) graphql.Output {
 		return out
 	}
 
-	varName := tp.Name
+	varName := "out_" + tp.Name
+	//varName := tp.Name
 	if tp.IsSlice {
 		varName += "s"
 	}

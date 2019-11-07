@@ -97,7 +97,8 @@ func (ivp *InputVarsPool) convertToGraphQL(typ reflect.Type, rootParam bool) (gr
 	}
 	// 非原生类型
 
-	varName := "in_" + tp.Name
+	varName := tp.Name
+	//varName := "in_" + tp.Name
 	if tp.IsSlice {
 		varName += "s"
 	}

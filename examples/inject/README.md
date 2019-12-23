@@ -39,21 +39,6 @@ func Inject(class *ClassInfo) (*ClassInfo, error) {
 goql.Get().RegisterQuery(Inject)
 </pre>
 
-# 注入到结构中的字段中
-<pre>
-type Loader struct {
-	Class *ClassInfo
-}
-
-func (l Loader) InjectToLoader() (*ClassInfo, error) {
-    // 执行到此处时 l.Class 的值由 InjectClass 函数提供
-	return l.Class, nil
-}
-
-... ...
-goql.Get().RegisterQuery(Loader{})
-</pre>
-
 # 验证
 打开 GraphiQl 客户端，在查询编辑框中输入
 <pre>
